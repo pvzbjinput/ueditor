@@ -87,7 +87,7 @@
         var sourceMode = false;
         var sourceEditor;
         var orgSetContent;
-        opt.sourceEditor = browser.ie  ? 'textarea' : (opt.sourceEditor || 'codemirror');
+        //opt.sourceEditor = browser.ie  ? 'textarea' : (opt.sourceEditor || 'codemirror');
 
         me.setOpt({
             sourceEditorFirst:false
