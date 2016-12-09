@@ -787,7 +787,7 @@ UE.plugins['table'] = function () {
             }
 
             //修改单元格大小时的鼠标移动
-            if (onDrag && dragTd) {
+            if (onDrag && dragTd&&mousedown) {
                 singleClickState = 0;
                 me.body.style.webkitUserSelect = 'none';
                 me.selection.getNative()[browser.ie9below ? 'empty' : 'removeAllRanges']();
