@@ -63,7 +63,7 @@ module.exports = function (grunt) {
                     footer: '\n\n})();\n',
                     process: function (src, s) {
                         var filename = s.substr(s.indexOf('/') + 1);
-                        return '// ' + filename + '\n' + src.replace('/_css/', '/css/') + '\n';
+                        return '// ' + filename + '\n\r\n' + src.replace('/_css/', '/css/') + '\n';
                     }
                 },
                 src: Util.fetchScripts("_examples/editor_api.js", Util.jsBasePath),
