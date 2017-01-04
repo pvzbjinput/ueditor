@@ -32,14 +32,14 @@
                     rowsNum = opt.numRows,
                     colsNum = opt.numCols;
                 for (var r = 0; r < rowsNum; r++) {
-                    html.push('<tr' + (r == 0 ? ' class="firstRow"':'') + '>');
+                    html.push('<tr' + (r == 0 ? ' class="firstRow"' : '') + '>');
                     for (var c = 0; c < colsNum; c++) {
                         html.push('<td width="' + tdWidth + '"  vAlign="' + opt.tdvalign + '" >' + (browser.ie && browser.version < 11 ? domUtils.fillChar : '<br/>') + '</td>')
                     }
                     html.push('</tr>')
                 }
                 //禁止指定table-width
-                return '<table><tbody>' + html.join('') + '</tbody></table>'
+                return '<table clsss="table-sgl-form"><tbody>' + html.join('') + '</tbody></table>'
             }
 
             if (!opt) {
@@ -182,7 +182,7 @@
             var table = getTableItemsByRange(this).table;
             if (table) {
                 var firstRow = table.rows[0];
-                return firstRow.cells[firstRow.cells.length-1].tagName.toLowerCase() != 'th' ? 0 : -1
+                return firstRow.cells[firstRow.cells.length - 1].tagName.toLowerCase() != 'th' ? 0 : -1
             }
             return -1;
         },
@@ -200,7 +200,7 @@
             var table = getTableItemsByRange(this).table;
             if (table) {
                 var firstRow = table.rows[0];
-                return firstRow.cells[firstRow.cells.length-1].tagName.toLowerCase() == 'th' ? 0 : -1
+                return firstRow.cells[firstRow.cells.length - 1].tagName.toLowerCase() == 'th' ? 0 : -1
             }
             return -1;
         },
@@ -217,7 +217,7 @@
         queryCommandState: function () {
             var table = getTableItemsByRange(this).table;
             if (table) {
-                var lastRow = table.rows[table.rows.length-1];
+                var lastRow = table.rows[table.rows.length - 1];
                 return lastRow.getElementsByTagName('th').length ? -1 : 0;
             }
             return -1;
@@ -236,7 +236,7 @@
         queryCommandState: function () {
             var table = getTableItemsByRange(this).table;
             if (table) {
-                var lastRow = table.rows[table.rows.length-1];
+                var lastRow = table.rows[table.rows.length - 1];
                 return lastRow.getElementsByTagName('th').length ? 0 : -1;
             }
             return -1;
@@ -244,7 +244,7 @@
         execCommand: function () {
             var table = getTableItemsByRange(this).table;
             if (table) {
-                for(var i = 0; i< table.rows.length; i++ ){
+                for (var i = 0; i < table.rows.length; i++) {
                     domUtils.remove(table.rows[i].children[0])
                 }
             }
@@ -292,7 +292,7 @@
 
             if (!table || !cell) return -1;
             var ut = getUETable(table);
-            if (ut.selectedTds.length)return -1;
+            if (ut.selectedTds.length) return -1;
 
             var cellInfo = ut.getCellInfo(cell),
                 downRowIndex = cellInfo.rowIndex + cellInfo.rowSpan;
@@ -360,7 +360,7 @@
                 }
             }
             rng.moveToBookmark(bk).select();
-            if (table.getAttribute("interlaced") === "enabled")this.fireEvent("interlacetable", table);
+            if (table.getAttribute("interlaced") === "enabled") this.fireEvent("interlacetable", table);
         }
     };
     //后插入行
@@ -388,7 +388,7 @@
                 }
             }
             rng.moveToBookmark(bk).select();
-            if (table.getAttribute("interlaced") === "enabled")this.fireEvent("interlacetable", table);
+            if (table.getAttribute("interlaced") === "enabled") this.fireEvent("interlacetable", table);
         }
     };
     UE.commands["deleterow"] = {
@@ -426,7 +426,7 @@
                     if (newCell) rng.selectNodeContents(newCell).setCursor(false, true);
                 }
             }
-            if (table.getAttribute("interlaced") === "enabled")this.fireEvent("interlacetable", table);
+            if (table.getAttribute("interlaced") === "enabled") this.fireEvent("interlacetable", table);
         }
     };
     UE.commands["insertcol"] = {
@@ -439,7 +439,7 @@
         execCommand: function (cmd) {
             var rng = this.selection.getRange(),
                 bk = rng.createBookmark(true);
-            if (this.queryCommandState(cmd) == -1)return;
+            if (this.queryCommandState(cmd) == -1) return;
             var cell = getTableItemsByRange(this).cell,
                 ut = getUETable(cell),
                 cellInfo = ut.getCellInfo(cell);
@@ -721,6 +721,53 @@
         }
     };
 
+    //单元格样式
+    UE.commands['cellclass'] = {
+        queryCommandState: function () {
+            return getTableItemsByRange(this).table ? 0 : -1
+        },
+        execCommand: function (cmd, data) {
+            var me = this,
+                ut = getUETableBySelected(me);
+
+            if (!ut) {
+                var start = me.selection.getStart(),
+                    cell = start && domUtils.findParentByTagName(start, ["td", "th", "caption"], true);
+
+                switch (data) {
+                    case "td-sgl-title-form":
+                        domUtils.removeClasses(cell, "td-sgl-form");
+                        domUtils.addClass(cell, data);
+                        break;
+                    case "td-sgl-form":
+                        domUtils.removeClasses(cell, "td-sgl-title-form");
+                        domUtils.addClass(cell, data);
+                        break;
+                }
+                
+                
+
+                me.selection.getRange().setCursor(true);
+            } else {
+                utils.each(ut.selectedTds, function (cell) {
+                    switch (data) {
+                        case "td-sgl-title-form":
+                            domUtils.removeClasses(cell, "td-sgl-form");
+                            domUtils.addClass(cell, data);
+                            break;
+                        case "td-sgl-form":
+                            domUtils.removeClasses(cell, "td-sgl-title-form");
+                            domUtils.addClass(cell, data);
+                            break;
+                    }
+                });
+            }
+        },
+        queryCommandValue: function (cmd) {
+            var cmd = cmd;
+        }
+    };
+
     //单元格对齐方式
     UE.commands['cellalignment'] = {
         queryCommandState: function () {
@@ -752,9 +799,9 @@
          */
         queryCommandValue: function (cmd) {
 
-            var activeMenuCell = getTableItemsByRange( this).cell;
+            var activeMenuCell = getTableItemsByRange(this).cell;
 
-            if( !activeMenuCell ) {
+            if (!activeMenuCell) {
                 activeMenuCell = getSelectedArr(this)[0];
             }
 
@@ -767,7 +814,7 @@
                 //获取同时选中的其他单元格
                 var cells = UE.UETable.getUETable(activeMenuCell).selectedTds;
 
-                !cells.length && ( cells = activeMenuCell );
+                !cells.length && (cells = activeMenuCell);
 
                 return UE.UETable.getTableCellAlignState(cells);
 
@@ -789,7 +836,7 @@
                 table = start && domUtils.findParentByTagName(start, ["table"], true);
 
             if (table) {
-                table.setAttribute("align",value);
+                table.setAttribute("align", value);
             }
         }
     };
@@ -851,7 +898,7 @@
     UE.commands["cleartablebackground"] = {
         queryCommandState: function () {
             var cells = getSelectedArr(this);
-            if (!cells.length)return -1;
+            if (!cells.length) return -1;
             for (var i = 0, cell; cell = cells[i++];) {
                 if (cell.style.backgroundColor !== "") return 0;
             }
@@ -896,14 +943,14 @@
         },
         execCommand: function () {
             var table = getTableItemsByRange(this).table;
-            utils.each(domUtils.getElementsByTagName(table,'td'),function(td){
+            utils.each(domUtils.getElementsByTagName(table, 'td'), function (td) {
                 td.style.borderWidth = '1px';
                 td.style.borderStyle = 'solid';
             })
         }
     };
     function resetTdWidth(table, editor) {
-        var tds = domUtils.getElementsByTagName(table,'td th');
+        var tds = domUtils.getElementsByTagName(table, 'td th');
         utils.each(tds, function (td) {
             td.removeAttribute("width");
         });
@@ -913,7 +960,7 @@
             utils.each(tds, function (td) {
                 (td.colSpan == 1) && tdsWidths.push(td.offsetWidth)
             })
-            utils.each(tds, function (td,i) {
+            utils.each(tds, function (td, i) {
                 (td.colSpan == 1) && td.setAttribute("width", tdsWidths[i] + "");
             })
         }, 0);
