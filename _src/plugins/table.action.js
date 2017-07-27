@@ -119,7 +119,7 @@ UE.plugins['table'] = function () {
                 'table.noBorderTable td,table.noBorderTable th,table.noBorderTable caption{border:1px dashed #ddd !important}' +
                 //插入的表格的默认样式
                 'table{margin-bottom:10px;border-collapse:collapse;display:table;}' +
-                'td,th{padding: 5px 10px;border: 1px solid #DDD;}' +
+                'td,th{border: 1px solid #DDD;}' +
                 'caption{border:1px dashed #DDD;border-bottom:0;padding:3px;text-align:center;}' +
                 'th{border-top:1px solid #BBB;background-color:#F7F7F7;}' +
                 'table tr.firstRow th{border-top-width:2px;}' +
@@ -403,7 +403,7 @@ UE.plugins['table'] = function () {
                 if (cell) {
                     var table = cell.parentNode.parentNode.parentNode;
                     if (table.offsetWidth > table.getAttribute("width")) {
-                        cell.style.wordBreak = "break-all";
+                        //cell.style.wordBreak = "break-all"; 去掉改功能
                     }
                 }
 
@@ -958,6 +958,7 @@ UE.plugins['table'] = function () {
      * 移动状态切换
      */
     function toggleDraggableState(editor, draggable, dir, mousePos, cell) {
+        return false;
         try {
             editor.body.style.cursor = dir == "h" ? "col-resize" : dir == "v" ? "row-resize" : "text";
             if (browser.ie) {

@@ -403,17 +403,26 @@
 
                 container.style.zIndex = options.zIndex;
 
+                var iframeCssUrlArr = options.iframeCssUrlArr;
+                var iframeCssUrlArrCssLinkHtml="";
+                if (iframeCssUrlArr && iframeCssUrlArr.length > 0) {
+                    for (var a = 0; a < iframeCssUrlArr.length; a++) {
+                        iframeCssUrlArrCssLinkHtml += '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(iframeCssUrlArr[a]) + '\'/>'
+                    }
+                }
+
                 var html = ( ie && browser.version < 9  ? '' : '<!DOCTYPE html>') +
                     '<html xmlns=\'http://www.w3.org/1999/xhtml\' class=\'view\' ><head>' +
                     '<style type=\'text/css\'>' +
                     //设置四周的留边
-                    '.view{padding:0;word-wrap:break-word;cursor:text;height:90%;}\n' +
+                    '.view{padding:0; padding-top:10px; word-wrap:break-word;cursor:text;height:90%;}\n' +
                     //设置默认字体和字号
                     //font-family不能呢随便改，在safari下fillchar会有解析问题
                     'body{margin:8px;font-family:sans-serif;font-size:16px;}' +
                     //设置段落间距
                     'p{margin:5px 0;}</style>' +
-                    ( options.iframeCssUrl ? '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(options.iframeCssUrl) + '\'/>' : '' ) +
+                    (options.iframeCssUrl ? '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(options.iframeCssUrl) + '\'/>' : '') +
+                    iframeCssUrlArrCssLinkHtml +
                     (options.initialStyle ? '<style>' + options.initialStyle + '</style>' : '') +
                     '</head><body class=\'view\' ></body>' +
                     '<script type=\'text/javascript\' ' + (ie ? 'defer=\'defer\'' : '' ) +' id=\'_initialScript\'>' +

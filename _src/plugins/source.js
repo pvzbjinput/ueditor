@@ -44,6 +44,9 @@
                     holder.onresize = null;
                     textarea = null;
                     holder = null;
+                },
+                selectByText: function (text) {
+
                 }
             };
         },
@@ -53,7 +56,8 @@
                 mode: "text/html",
                 tabMode: "indent",
                 lineNumbers: true,
-                lineWrapping:true
+                lineWrapping: true,
+                matchTags: { bothTags: true }
             });
             var dom = codeEditor.getWrapperElement();
             dom.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;font-family:consolas,"Courier new",monospace;font-size:13px;';
@@ -76,6 +80,9 @@
                     holder.removeChild(dom);
                     dom = null;
                     codeEditor = null;
+                },
+                selectByText: function (text) {
+                    codeEditor.selectMatches(text);
                 }
             };
         }
@@ -87,7 +94,7 @@
         var sourceMode = false;
         var sourceEditor;
         var orgSetContent;
-        //opt.sourceEditor = browser.ie  ? 'textarea' : (opt.sourceEditor || 'codemirror');
+        //opt.sourceEditor = browser.ie  ? 'textarea' : (opt.sourceEditor || 'codemirror'); 改变默认是 codemirror
 
         me.setOpt({
             sourceEditorFirst:false
@@ -168,6 +175,8 @@
                     sourceEditor = createSourceEditor(me.iframe.parentNode);
 
                     sourceEditor.setContent(content);
+
+                    sourceEditor.selectByText(new RegExp("fd-codemirrorselected|fd-editing"));
 
                     orgSetContent = me.setContent;
 
@@ -272,7 +281,9 @@
 
         if(opt.sourceEditor == "codemirror"){
 
-            me.addListener("ready",function(){
+            me.addListener("ready", function () {
+                //设计页面引用了页面
+                /*
                 utils.loadFile(document,{
                     src : opt.codeMirrorJsUrl || opt.UEDITOR_HOME_URL + "third-party/codemirror/codemirror.js",
                     tag : "script",
@@ -291,7 +302,7 @@
                     type : "text/css",
                     href : opt.codeMirrorCssUrl || opt.UEDITOR_HOME_URL + "third-party/codemirror/codemirror.css"
                 });
-
+                */
             });
         }
 

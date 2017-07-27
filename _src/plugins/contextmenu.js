@@ -319,15 +319,23 @@ UE.plugins['contextmenu'] = function () {
 				    group: '单元格样式',
 				    label: "单元格样式",
 				    subMenu: [
+                        {
+                            cmdName: 'cellclass',
+                            label: '取消',
+                            value:'cancle'
+                        },
                      {
                          cmdName: 'cellclass',
                          label: '标题',
-                         value: 'td-sgl-title-form'
-                     },
-                     {
+                         value: 'td-title'
+                     }, {
+                         cmdName: 'cellclass',
+                         label: '控件-标题',
+                         value: 'td-control-title'
+                     }, {
                          cmdName: 'cellclass',
                          label: '控件',
-                         value: 'td-sgl-form'
+                         value: 'td-control'
                      }
 				    ]
 				},
@@ -372,6 +380,10 @@ UE.plugins['contextmenu'] = function () {
                 {
                     label: lang['paste'],
                     cmdName: 'paste'
+                },
+                {
+                    label: "粘贴控件",
+                    cmdName: 'pastecontrol'
                 }
             ];
     if (!items.length) {

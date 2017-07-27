@@ -4,8 +4,8 @@
 UE.plugins['defaultfilter'] = function () {
     var me = this;
     me.setOpt({
-        'allowDivTransToP':true,
-        'disabledTableInTable':true
+        'allowDivTransToP':false,
+        'disabledTableInTable':false
     });
     //默认的过滤处理
     //进入编辑器的内容处理
@@ -32,7 +32,7 @@ UE.plugins['defaultfilter'] = function () {
                     return;
                 }
                 switch (node.tagName) {
-                    case 'style':
+                    /*case 'style':这里不要处理 这里不要处理 style 和script
                     case 'script':
                         node.setAttr({
                             cdata_tag: node.tagName,
@@ -41,7 +41,7 @@ UE.plugins['defaultfilter'] = function () {
                         });
                         node.tagName = 'div';
                         node.innerHTML('');
-                        break;
+                        break;*/
                     case 'a':
                         if (val = node.getAttr('href')) {
                             node.setAttr('_href', val)
@@ -140,6 +140,7 @@ UE.plugins['defaultfilter'] = function () {
                         node.tagName = 'li';
                         break;
                     case 'li':
+                        /* 这里不处理 分页模板
                         var className = node.getAttr('class');
                         if (!className || !/list\-/.test(className)) {
                             node.setAttr()
@@ -147,7 +148,7 @@ UE.plugins['defaultfilter'] = function () {
                         var tmpNodes = node.getNodesByTagName('ol ul');
                         UE.utils.each(tmpNodes, function (n) {
                             node.parentNode.insertAfter(n, node);
-                        });
+                        });*/
                         break;
                     case 'td':
                     case 'th':
