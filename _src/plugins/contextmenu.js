@@ -384,7 +384,10 @@ UE.plugins['contextmenu'] = function () {
                 {
                     label: "粘贴控件",
                     cmdName: 'pastecontrol'
-                }
+                },{
+					label:"插入DataGrid模板",
+					cmdName:"insertdatagridtemplate"
+				}
             ];
     if (!items.length) {
         return;

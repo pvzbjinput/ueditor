@@ -1,14 +1,14 @@
 //维护编辑器一下默认的不在插件中的配置项
-UE.Editor.defaultOptions = function(editor){
+UE.Editor.defaultOptions = function(editor) {
 
     var _url = editor.options.UEDITOR_HOME_URL;
     return {
         isShow: true,
         initialContent: '',
-        initialStyle:'',
+        initialStyle: '',
         autoClearinitialContent: false,
         iframeCssUrl: _url + 'themes/iframe.css',
-		iframeCssUrlArr:[],
+        iframeCssUrlArr: [],
         textarea: 'editorValue',
         focus: false,
         focusInEnd: true,
@@ -26,7 +26,8 @@ UE.Editor.defaultOptions = function(editor){
         allHtmlEnabled: false,
         scaleEnabled: false,
         tableNativeEditInFF: false,
-        autoSyncData : true,
-        fileNameFormat: '{time}{rand:6}'
-    }
+        autoSyncData: true,
+        fileNameFormat: '{time}{rand:6}',
+        insertHtmlTableWidth: 800 // 0 代表不设置插入表格宽度
+    };
 };

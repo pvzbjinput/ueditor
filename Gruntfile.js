@@ -1,6 +1,6 @@
 'use strict';
 
-module.exports = function (grunt) {
+module.exports = function(grunt) {
 
     var fs = require("fs"),
         Util = {
@@ -9,20 +9,20 @@ module.exports = function (grunt) {
             parseBasePath: '_parse/',
             cssBasePath: 'themes/default/_css/',
 
-            fetchScripts: function (readFile, basePath) {
+            fetchScripts: function(readFile, basePath) {
 
                 var sources = fs.readFileSync(readFile);
                 sources = /\[([^\]]+\.js'[^\]]+)\]/.exec(sources);
                 sources = sources[1].replace(/\/\/.*\n/g, '\n').replace(/'|"|\n|\t|\s/g, '');
                 sources = sources.split(",");
-                sources.forEach(function (filepath, index) {
-                    sources[ index ] = basePath + filepath;
+                sources.forEach(function(filepath, index) {
+                    sources[index] = basePath + filepath;
                 });
 
                 return sources;
             },
 
-            fetchStyles: function () {
+            fetchStyles: function() {
 
                 var sources = fs.readFileSync(this.cssBasePath + "ueditor.css"),
                     filepath = null,
@@ -30,7 +30,7 @@ module.exports = function (grunt) {
                     src = [];
 
                 while (filepath = pattern.exec(sources)) {
-                    src.push(this.cssBasePath + filepath[ 1 ].replace(/'|"/g, ""));
+                    src.push(this.cssBasePath + filepath[1].replace(/'|"/g, ""));
                 }
 
                 return src;
@@ -39,15 +39,15 @@ module.exports = function (grunt) {
 
         },
         packageJson = grunt.file.readJSON('package.json'),
-        server = grunt.option('server') || 'php',
+        server = grunt.option('server') || 'net',
         encode = grunt.option('encode') || 'utf8',
         disDir = "dist/",
         banner = '/*!\n * UEditor\n * version: ' + packageJson.name + '\n * build: <%= new Date() %>\n */\n\n';
 
     //init
-    (function () {
+    (function() {
 
-        server = typeof server === "string" ? server.toLowerCase() : 'php';
+        server = typeof server === "string" ? server.toLowerCase() : 'net';
         encode = typeof encode === "string" ? encode.toLowerCase() : 'utf8';
 
         disDir = 'dist/' + encode + '-' + server + '/';
@@ -61,7 +61,7 @@ module.exports = function (grunt) {
                 options: {
                     banner: banner + '(function(){\n\n',
                     footer: '\n\n})();\n',
-                    process: function (src, s) {
+                    process: function(src, s) {
                         var filename = s.substr(s.indexOf('/') + 1);
                         return '// ' + filename + '\n\r\n' + src.replace('/_css/', '/css/') + '\n';
                     }
@@ -109,22 +109,18 @@ module.exports = function (grunt) {
         },
         copy: {
             base: {
-                files: [
-                    {
+                files: [{
 
-                        src: [ '*.html', 'themes/iframe.css', 'themes/default/dialogbase.css', 'themes/default/images/**', 'dialogs/**', 'lang/**', 'third-party/**' ],
-                        dest: disDir
+                    src: ['*.html', 'themes/iframe.css', 'themes/default/dialogbase.css', 'themes/default/images/**', 'dialogs/**', 'lang/**', 'third-party/**'],
+                    dest: disDir
 
-                    }
-                ]
+                }]
             },
             demo: {
-                files: [
-                    {
-                        src: '_examples/completeDemo.html',
-                        dest: disDir + 'index.html'
-                    }
-                ]
+                files: [{
+                    src: '_examples/completeDemo.html',
+                    dest: disDir + 'index.html'
+                }]
             },
             php: {
 
@@ -166,20 +162,17 @@ module.exports = function (grunt) {
         replace: {
 
             fileEncode: {
-                src: [ disDir + '**/*.html', disDir + 'dialogs/**/*.js', disDir + '**/*.css', disDir + '**/*.php', disDir + '**/*.jsp', disDir + '**/*.ashx', disDir + '**/*.asp' ],
+                src: [disDir + '**/*.html', disDir + 'dialogs/**/*.js', disDir + '**/*.css', disDir + '**/*.php', disDir + '**/*.jsp', disDir + '**/*.ashx', disDir + '**/*.asp'],
                 overwrite: true,
-                replacements: [
-                    {
-                        from: /utf-8/gi,
-                        to: 'gbk'
-                    }
-                ]
+                replacements: [{
+                    from: /utf-8/gi,
+                    to: 'gbk'
+                }]
             },
             demo: {
                 src: disDir + 'index.html',
                 overwrite: true,
-                replacements: [
-                    {
+                replacements: [{
                         from: /\.\.\//gi,
                         to: ''
                     },
@@ -190,14 +183,12 @@ module.exports = function (grunt) {
                 ]
             },
             gbkasp: {
-                src: [ disDir + 'asp/*.asp' ],
+                src: [disDir + 'asp/*.asp'],
                 overwrite: true,
-                replacements: [
-                    {
-                        from: /65001/gi,
-                        to: '936'
-                    }
-                ]
+                replacements: [{
+                    from: /65001/gi,
+                    to: '936'
+                }]
             }
 
         },
@@ -224,9 +215,9 @@ module.exports = function (grunt) {
     grunt.loadNpmTasks('grunt-transcoding');
     grunt.loadNpmTasks('grunt-contrib-clean');
 
-    grunt.registerTask('default', 'UEditor build', function () {
+    grunt.registerTask('default', 'UEditor build', function() {
 
-        var tasks = [ 'concat', 'cssmin', 'uglify', 'copy:base', 'copy:' + server, 'copy:demo', 'replace:demo', 'clean' ];
+        var tasks = ['concat', 'cssmin', 'uglify', 'copy:base', 'copy:' + server, 'copy:demo', 'replace:demo', 'clean'];
 
         if (encode === 'gbk') {
             tasks.push('replace:fileEncode');

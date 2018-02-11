@@ -57,7 +57,10 @@
                 tabMode: "indent",
                 lineNumbers: true,
                 lineWrapping: true,
-                matchTags: { bothTags: true }
+			    matchBrackets: true,
+                matchTags: { bothTags: true },
+			    foldGutter:true,
+                gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]
             });
             var dom = codeEditor.getWrapperElement();
             dom.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;font-family:consolas,"Courier new",monospace;font-size:13px;';

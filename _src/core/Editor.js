@@ -19,8 +19,9 @@
  * @class Editor
  */
 
-(function () {
-    var uid = 0, _selectionChangeTimer;
+(function() {
+    var uid = 0,
+        _selectionChangeTimer;
 
     /**
      * 获取编辑器的html内容，赋值到编辑器所在表单的textarea文本域里面
@@ -50,26 +51,27 @@
             }));
             //不要产生多个textarea
             editor.textarea = textarea;
-        }
-        !textarea.getAttribute('name') && textarea.setAttribute('name', editor.options.textarea );
+        }!textarea.getAttribute('name') && textarea.setAttribute('name', editor.options.textarea);
         textarea.value = editor.hasContents() ?
             (editor.options.allHtmlEnabled ? editor.getAllHtml() : editor.getContent(null, null, true)) :
-            ''
+            '';
     }
-    function loadPlugins(me){
+
+    function loadPlugins(me) {
         //初始化插件
         for (var pi in UE.plugins) {
             UE.plugins[pi].call(me);
         }
 
     }
-    function checkCurLang(I18N){
-        for(var lang in I18N){
+
+    function checkCurLang(I18N) {
+        for (var lang in I18N) {
             return lang
         }
     }
 
-    function langReadied(me){
+    function langReadied(me) {
         me.langIsReady = true;
 
         me.fireEvent("langReady");
@@ -225,7 +227,7 @@
      * ```
      * @see UE.Config
      */
-    var Editor = UE.Editor = function (options) {
+    var Editor = UE.Editor = function(options) {
         var me = this;
         me.uid = uid++;
         EventBase.call(me);
@@ -240,19 +242,19 @@
         /* 尝试异步加载后台配置 */
         me.loadServerConfig();
 
-        if(!utils.isEmptyObject(UE.I18N)){
+        if (!utils.isEmptyObject(UE.I18N)) {
             //修改默认的语言类型
             me.options.lang = checkCurLang(UE.I18N);
             UE.plugin.load(me);
             langReadied(me);
 
-        }else{
+        } else {
             utils.loadFile(document, {
                 src: me.options.langPath + me.options.lang + "/" + me.options.lang + ".js",
                 tag: "script",
                 type: "text/javascript",
                 defer: "defer"
-            }, function () {
+            }, function() {
                 UE.plugin.load(me);
                 langReadied(me);
             });
@@ -261,9 +263,9 @@
         UE.instants['ueditorInstant' + me.uid] = me;
     };
     Editor.prototype = {
-         registerCommand : function(name,obj){
+        registerCommand: function(name, obj) {
             this.commands[name] = obj;
-         },
+        },
         /**
          * 编辑器对外提供的监听ready事件的接口， 通过调用该方法，达到的效果与监听ready事件是一致的
          * @method ready
@@ -278,7 +280,7 @@
          * ```
          * @see UE.Editor.event:ready
          */
-        ready: function (fn) {
+        ready: function(fn) {
             var me = this;
             if (fn) {
                 me.isReady ? fn.apply(me) : me.addListener('ready', fn);
@@ -311,7 +313,7 @@
          * } );
          * ```
          */
-        setOpt: function (key, val) {
+        setOpt: function(key, val) {
             var obj = {};
             if (utils.isString(key)) {
                 obj[key] = val
@@ -320,7 +322,7 @@
             }
             utils.extend(this.options, obj, true);
         },
-        getOpt:function(key){
+        getOpt: function(key) {
             return this.options[key]
         },
         /**
@@ -331,7 +333,7 @@
          * editor.destroy();
          * ```
          */
-        destroy: function () {
+        destroy: function() {
 
             var me = this;
             me.fireEvent('destroy');
@@ -375,43 +377,43 @@
          * @remind 执行该方法,会触发ready事件
          * @warning 必须且只能调用一次
          */
-        render: function (container) {
+        render: function(container) {
             var me = this,
                 options = me.options,
-                getStyleValue=function(attr){
-                    return parseInt(domUtils.getComputedStyle(container,attr));
+                getStyleValue = function(attr) {
+                    return parseInt(domUtils.getComputedStyle(container, attr));
                 };
             if (utils.isString(container)) {
                 container = document.getElementById(container);
             }
             if (container) {
-                if(options.initialFrameWidth){
+                if (options.initialFrameWidth) {
                     options.minFrameWidth = options.initialFrameWidth
-                }else{
+                } else {
                     options.minFrameWidth = options.initialFrameWidth = container.offsetWidth;
                 }
-                if(options.initialFrameHeight){
+                if (options.initialFrameHeight) {
                     options.minFrameHeight = options.initialFrameHeight
-                }else{
+                } else {
                     options.initialFrameHeight = options.minFrameHeight = container.offsetHeight;
                 }
 
-                container.style.width = /%$/.test(options.initialFrameWidth) ?  '100%' : options.initialFrameWidth-
-                    getStyleValue("padding-left")- getStyleValue("padding-right") +'px';
-                container.style.height = /%$/.test(options.initialFrameHeight) ?  '100%' : options.initialFrameHeight -
-                    getStyleValue("padding-top")- getStyleValue("padding-bottom") +'px';
+                container.style.width = /%$/.test(options.initialFrameWidth) ? '100%' : options.initialFrameWidth -
+                    getStyleValue("padding-left") - getStyleValue("padding-right") + 'px';
+                container.style.height = /%$/.test(options.initialFrameHeight) ? '100%' : options.initialFrameHeight -
+                    getStyleValue("padding-top") - getStyleValue("padding-bottom") + 'px';
 
                 container.style.zIndex = options.zIndex;
 
                 var iframeCssUrlArr = options.iframeCssUrlArr;
-                var iframeCssUrlArrCssLinkHtml="";
+                var iframeCssUrlArrCssLinkHtml = "";
                 if (iframeCssUrlArr && iframeCssUrlArr.length > 0) {
                     for (var a = 0; a < iframeCssUrlArr.length; a++) {
-                        iframeCssUrlArrCssLinkHtml += '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(iframeCssUrlArr[a]) + '\'/>'
+                        iframeCssUrlArrCssLinkHtml += '<link rel=\'stylesheet\' type=\'text/css\' href=\'' + utils.unhtml(iframeCssUrlArr[a]) + '&r=' + Math.random() + '\'/>'
                     }
                 }
 
-                var html = ( ie && browser.version < 9  ? '' : '<!DOCTYPE html>') +
+                var html = (ie && browser.version < 9 ? '' : '<!DOCTYPE html>') +
                     '<html xmlns=\'http://www.w3.org/1999/xhtml\' class=\'view\' ><head>' +
                     '<style type=\'text/css\'>' +
                     //设置四周的留边
@@ -425,7 +427,7 @@
                     iframeCssUrlArrCssLinkHtml +
                     (options.initialStyle ? '<style>' + options.initialStyle + '</style>' : '') +
                     '</head><body class=\'view\' ></body>' +
-                    '<script type=\'text/javascript\' ' + (ie ? 'defer=\'defer\'' : '' ) +' id=\'_initialScript\'>' +
+                    '<script type=\'text/javascript\' ' + (ie ? 'defer=\'defer\'' : '') + ' id=\'_initialScript\'>' +
                     'setTimeout(function(){editor = window.parent.UE.instants[\'ueditorInstant' + me.uid + '\'];editor._setup(document);},0);' +
                     'var _tmpScript = document.getElementById(\'_initialScript\');_tmpScript.parentNode.removeChild(_tmpScript);</script></html>';
                 container.appendChild(domUtils.createElement(document, 'iframe', {
@@ -434,19 +436,19 @@
                     height: "100%",
                     frameborder: "0",
                     //先注释掉了，加的原因忘记了，但开启会直接导致全屏模式下内容多时不会出现滚动条
-//                    scrolling :'no',
-                    src: 'javascript:void(function(){document.open();' + (options.customDomain && document.domain != location.hostname ?  'document.domain="' + document.domain + '";' : '') +
+                    //                    scrolling :'no',
+                    src: 'javascript:void(function(){document.open();' + (options.customDomain && document.domain != location.hostname ? 'document.domain="' + document.domain + '";' : '') +
                         'document.write("' + html + '");document.close();}())'
                 }));
                 container.style.overflow = 'hidden';
                 //解决如果是给定的百分比，会导致高度算不对的问题
-                setTimeout(function(){
-                    if( /%$/.test(options.initialFrameWidth)){
+                setTimeout(function() {
+                    if (/%$/.test(options.initialFrameWidth)) {
                         options.minFrameWidth = options.initialFrameWidth = container.offsetWidth;
                         //如果这里给定宽度，会导致ie在拖动窗口大小时，编辑区域不随着变化
-//                        container.style.width = options.initialFrameWidth + 'px';
+                        //                        container.style.width = options.initialFrameWidth + 'px';
                     }
-                    if(/%$/.test(options.initialFrameHeight)){
+                    if (/%$/.test(options.initialFrameHeight)) {
                         options.minFrameHeight = options.initialFrameHeight = container.offsetHeight;
                         container.style.height = options.initialFrameHeight + 'px';
                     }
@@ -460,7 +462,7 @@
          * @private
          * @param { Element } doc 编辑器Iframe中的文档对象
          */
-        _setup: function (doc) {
+        _setup: function(doc) {
 
             var me = this,
                 options = me.options;
@@ -487,12 +489,12 @@
             for (var form = this.iframe.parentNode; !domUtils.isBody(form); form = form.parentNode) {
                 if (form.tagName == 'FORM') {
                     me.form = form;
-                    if(me.options.autoSyncData){
-                        domUtils.on(me.window,'blur',function(){
-                            setValue(form,me);
+                    if (me.options.autoSyncData) {
+                        domUtils.on(me.window, 'blur', function() {
+                            setValue(form, me);
                         });
-                    }else{
-                        domUtils.on(form, 'submit', function () {
+                    } else {
+                        domUtils.on(form, 'submit', function() {
                             setValue(this, me);
                         });
                     }
@@ -502,7 +504,7 @@
             if (options.initialContent) {
                 if (options.autoClearinitialContent) {
                     var oldExecCommand = me.execCommand;
-                    me.execCommand = function () {
+                    me.execCommand = function() {
                         me.fireEvent('firstBeforeExecCommand');
                         return oldExecCommand.apply(me, arguments);
                     };
@@ -518,7 +520,7 @@
             }
             //如果要求focus, 就把光标定位到内容开始
             if (options.focus) {
-                setTimeout(function () {
+                setTimeout(function() {
                     me.focus(me.options.focusInEnd);
                     //如果自动清除开着，就不需要做selectionchange;
                     !me.options.autoClearinitialContent && me._selectionChange();
@@ -533,16 +535,13 @@
 
             try {
                 me.document.execCommand('2D-position', false, false);
-            } catch (e) {
-            }
+            } catch (e) {}
             try {
                 me.document.execCommand('enableInlineTableEditing', false, false);
-            } catch (e) {
-            }
+            } catch (e) {}
             try {
                 me.document.execCommand('enableObjectResizing', false, false);
-            } catch (e) {
-            }
+            } catch (e) {}
 
             //挂接快捷键
             me._bindshortcutKeys();
@@ -550,7 +549,7 @@
             me.fireEvent('ready');
             options.onready && options.onready.call(me);
             if (!browser.ie9below) {
-                domUtils.on(me.window, ['blur', 'focus'], function (e) {
+                domUtils.on(me.window, ['blur', 'focus'], function(e) {
                     //chrome下会出现alt+tab切换时，导致选区位置不对
                     if (e.type == 'blur') {
                         me._bakRange = me.selection.getRange();
@@ -564,8 +563,7 @@
                     } else {
                         try {
                             me._bakRange && me._bakRange.select();
-                        } catch (e) {
-                        }
+                        } catch (e) {}
                     }
                 });
             }
@@ -573,10 +571,10 @@
             if (browser.gecko && browser.version <= 10902) {
                 //修复ff3.6初始化进来，不能点击获得焦点
                 me.body.contentEditable = false;
-                setTimeout(function () {
+                setTimeout(function() {
                     me.body.contentEditable = true;
                 }, 100);
-                setInterval(function () {
+                setInterval(function() {
                     me.body.style.height = me.iframe.offsetHeight - 20 + 'px'
                 }, 100)
             }
@@ -603,12 +601,12 @@
          * @method sync
          * @param { String } formID 指定一个要同步数据的form的id,编辑器的数据会同步到你指定form下
          */
-        sync: function (formId) {
+        sync: function(formId) {
             var me = this,
                 form = formId ? document.getElementById(formId) :
-                    domUtils.findParent(me.iframe.parentNode, function (node) {
-                        return node.tagName == 'FORM'
-                    }, true);
+                domUtils.findParent(me.iframe.parentNode, function(node) {
+                    return node.tagName == 'FORM'
+                }, true);
             form && setValue(form, me);
         },
 
@@ -622,11 +620,10 @@
          * editor.setHeight(number);
          * ```
          */
-        setHeight: function (height,notSetHeight) {
+        setHeight: function(height, notSetHeight) {
             if (height !== parseInt(this.iframe.parentNode.style.height)) {
                 this.iframe.parentNode.style.height = height + 'px';
-            }
-            !notSetHeight && (this.options.minFrameHeight = this.options.initialFrameHeight = height);
+            }!notSetHeight && (this.options.minFrameHeight = this.options.initialFrameHeight = height);
             this.body.style.height = height + 'px';
             !notSetHeight && this.trigger('setHeight')
         },
@@ -654,7 +651,7 @@
          * editor.addshortcutkey("Underline", "ctrl+85"); //^U
          * ```
          */
-        addshortcutkey: function (cmd, keys) {
+        addshortcutkey: function(cmd, keys) {
             var obj = {};
             if (keys) {
                 obj[cmd] = keys
@@ -669,23 +666,25 @@
          * @method _bindshortcutKeys
          * @private
          */
-        _bindshortcutKeys: function () {
-            var me = this, shortcutkeys = this.shortcutkeys;
-            me.addListener('keydown', function (type, e) {
+        _bindshortcutKeys: function() {
+            var me = this,
+                shortcutkeys = this.shortcutkeys;
+            me.addListener('keydown', function(type, e) {
                 var keyCode = e.keyCode || e.which;
                 for (var i in shortcutkeys) {
                     var tmp = shortcutkeys[i].split(',');
                     for (var t = 0, ti; ti = tmp[t++];) {
                         ti = ti.split(':');
-                        var key = ti[0], param = ti[1];
+                        var key = ti[0],
+                            param = ti[1];
                         if (/^(ctrl)(\+shift)?\+(\d+)$/.test(key.toLowerCase()) || /^(\d+)$/.test(key)) {
-                            if (( (RegExp.$1 == 'ctrl' ? (e.ctrlKey || e.metaKey) : 0)
-                                && (RegExp.$2 != "" ? e[RegExp.$2.slice(1) + "Key"] : 1)
-                                && keyCode == RegExp.$3
+                            if (((RegExp.$1 == 'ctrl' ? (e.ctrlKey || e.metaKey) : 0) &&
+                                    (RegExp.$2 != "" ? e[RegExp.$2.slice(1) + "Key"] : 1) &&
+                                    keyCode == RegExp.$3
                                 ) ||
                                 keyCode == RegExp.$1
-                                ) {
-                                if (me.queryCommandState(i,param) != -1)
+                            ) {
+                                if (me.queryCommandState(i, param) != -1)
                                     me.execCommand(i, param);
                                 domUtils.preventDefault(e);
                             }
@@ -726,7 +725,7 @@
          * } );
          * ```
          */
-        getContent: function (cmd, fn,notSetCursor,ignoreBlank,formatter) {
+        getContent: function(cmd, fn, notSetCursor, ignoreBlank, formatter) {
             var me = this;
             if (cmd && utils.isFunction(cmd)) {
                 fn = cmd;
@@ -736,10 +735,10 @@
                 return '';
             }
             me.fireEvent('beforegetcontent');
-            var root = UE.htmlparser(me.body.innerHTML,ignoreBlank);
+            var root = UE.htmlparser(me.body.innerHTML, ignoreBlank);
             me.filterOutputRule(root);
-            me.fireEvent('aftergetcontent', cmd,root);
-            return  root.toHtml(formatter);
+            me.fireEvent('aftergetcontent', cmd, root);
+            return root.toHtml(formatter);
         },
 
         /**
@@ -751,24 +750,24 @@
          * editor.getAllHtml(); //返回格式大致是: <html><head>...</head><body>...</body></html>
          * ```
          */
-        getAllHtml: function () {
+        getAllHtml: function() {
             var me = this,
                 headHtml = [],
                 html = '';
             me.fireEvent('getAllHtml', headHtml);
             if (browser.ie && browser.version > 8) {
                 var headHtmlForIE9 = '';
-                utils.each(me.document.styleSheets, function (si) {
-                    headHtmlForIE9 += ( si.href ? '<link rel="stylesheet" type="text/css" href="' + si.href + '" />' : '<style>' + si.cssText + '</style>');
+                utils.each(me.document.styleSheets, function(si) {
+                    headHtmlForIE9 += (si.href ? '<link rel="stylesheet" type="text/css" href="' + si.href + '" />' : '<style>' + si.cssText + '</style>');
                 });
-                utils.each(me.document.getElementsByTagName('script'), function (si) {
+                utils.each(me.document.getElementsByTagName('script'), function(si) {
                     headHtmlForIE9 += si.outerHTML;
                 });
 
             }
-            return '<html><head>' + (me.options.charset ? '<meta http-equiv="Content-Type" content="text/html; charset=' + me.options.charset + '"/>' : '')
-                + (headHtmlForIE9 || me.document.getElementsByTagName('head')[0].innerHTML) + headHtml.join('\n') + '</head>'
-                + '<body ' + (ie && browser.version < 9 ? 'class="view"' : '') + '>' + me.getContent(null, null, true) + '</body></html>';
+            return '<html><head>' + (me.options.charset ? '<meta http-equiv="Content-Type" content="text/html; charset=' + me.options.charset + '"/>' : '') +
+                (headHtmlForIE9 || me.document.getElementsByTagName('head')[0].innerHTML) + headHtml.join('\n') + '</head>' +
+                '<body ' + (ie && browser.version < 9 ? 'class="view"' : '') + '>' + me.getContent(null, null, true) + '</body></html>';
         },
 
         /**
@@ -781,13 +780,13 @@
          * console.log(editor.getPlainTxt()); //输出:"1\n2\n
          * ```
          */
-        getPlainTxt: function () {
+        getPlainTxt: function() {
             var reg = new RegExp(domUtils.fillChar, 'g'),
-                html = this.body.innerHTML.replace(/[\n\r]/g, '');//ie要先去了\n在处理
+                html = this.body.innerHTML.replace(/[\n\r]/g, ''); //ie要先去了\n在处理
             html = html.replace(/<(p|div)[^>]*>(<br\/?>|&nbsp;)<\/\1>/gi, '\n')
                 .replace(/<br\/?>/gi, '\n')
                 .replace(/<[^>/]+>/g, '')
-                .replace(/(\n)?<\/([^>]+)>/g, function (a, b, c) {
+                .replace(/(\n)?<\/([^>]+)>/g, function(a, b, c) {
                     return dtd.$block[c] ? '\n' : b ? b : '';
                 });
             //取出来的空格会有c2a0会变成乱码，处理这种情况\u00a0
@@ -804,7 +803,7 @@
          * console.log(editor.getPlainTxt()); //输出:"12
          * ```
          */
-        getContentTxt: function () {
+        getContentTxt: function() {
             var reg = new RegExp(domUtils.fillChar, 'g');
             //取出来的空格会有c2a0会变成乱码，处理这种情况\u00a0
             return this.body[browser.ie ? 'innerText' : 'textContent'].replace(reg, '').replace(/\u00a0/g, ' ');
@@ -835,7 +834,7 @@
          * editor.setContent('<p>new text</p>', true); //插入的结果是<p>old text</p><p>new text</p>
          * ```
          */
-        setContent: function (html, isAppendTo, notFireSelectionchange) {
+        setContent: function(html, isAppendTo, notFireSelectionchange) {
             var me = this;
 
             me.fireEvent('beforesetcontent', html);
@@ -846,18 +845,19 @@
             me.body.innerHTML = (isAppendTo ? me.body.innerHTML : '') + html;
 
 
-            function isCdataDiv(node){
-                return  node.tagName == 'DIV' && node.getAttribute('cdata_tag');
+            function isCdataDiv(node) {
+                return node.tagName == 'DIV' && node.getAttribute('cdata_tag');
             }
             //给文本或者inline节点套p标签
             if (me.options.enterTag == 'p') {
 
-                var child = this.body.firstChild, tmpNode;
+                var child = this.body.firstChild,
+                    tmpNode;
                 if (!child || child.nodeType == 1 &&
                     (dtd.$cdata[child.tagName] || isCdataDiv(child) ||
                         domUtils.isCustomeNode(child)
-                        )
-                    && child === this.body.lastChild) {
+                    ) &&
+                    child === this.body.lastChild) {
                     this.body.innerHTML = '<p>' + (browser.ie ? '&nbsp;' : '<br/>') + '</p>' + this.body.innerHTML;
 
                 } else {
@@ -892,8 +892,8 @@
             if (browser.gecko && (geckoSel = this.selection.getNative())) {
                 geckoSel.removeAllRanges();
             }
-            if(me.options.autoSyncData){
-                me.form && setValue(me.form,me);
+            if (me.options.autoSyncData) {
+                me.form && setValue(me.form, me);
             }
         },
 
@@ -915,26 +915,26 @@
          * editor.focus(true)
          * ```
          */
-        focus: function (toEnd) {
+        focus: function(toEnd) {
             try {
                 var me = this,
                     rng = me.selection.getRange();
                 if (toEnd) {
                     var node = me.body.lastChild;
-                    if(node && node.nodeType == 1 && !dtd.$empty[node.tagName]){
-                        if(domUtils.isEmptyBlock(node)){
+                    if (node && node.nodeType == 1 && !dtd.$empty[node.tagName]) {
+                        if (domUtils.isEmptyBlock(node)) {
                             rng.setStartAtFirst(node)
-                        }else{
+                        } else {
                             rng.setStartAtLast(node)
                         }
                         rng.collapse(true);
                     }
                     rng.setCursor(true);
                 } else {
-                    if(!rng.collapsed && domUtils.isBody(rng.startContainer) && rng.startOffset == 0){
+                    if (!rng.collapsed && domUtils.isBody(rng.startContainer) && rng.startOffset == 0) {
 
                         var node = me.body.firstChild;
-                        if(node && node.nodeType == 1 && !dtd.$empty[node.tagName]){
+                        if (node && node.nodeType == 1 && !dtd.$empty[node.tagName]) {
                             rng.setStartAtFirst(node).collapse(true);
                         }
                     }
@@ -943,22 +943,21 @@
 
                 }
                 this.fireEvent('focus selectionchange');
-            } catch (e) {
-            }
+            } catch (e) {}
 
         },
-        isFocus:function(){
+        isFocus: function() {
             return this.selection.isFocus();
         },
-        blur:function(){
+        blur: function() {
             var sel = this.selection.getNative();
-            if(sel.empty && browser.ie){
+            if (sel.empty && browser.ie) {
                 var nativeRng = document.body.createTextRange();
                 nativeRng.moveToElementText(document.body);
                 nativeRng.collapse(true);
                 nativeRng.select();
                 sel.empty()
-            }else{
+            } else {
                 sel.removeAllRanges()
             }
 
@@ -969,24 +968,24 @@
          * @method _initEvents
          * @private
          */
-        _initEvents: function () {
+        _initEvents: function() {
             var me = this,
                 doc = me.document,
                 win = me.window;
             me._proxyDomEvent = utils.bind(me._proxyDomEvent, me);
             domUtils.on(doc, ['click', 'contextmenu', 'mousedown', 'keydown', 'keyup', 'keypress', 'mouseup', 'mouseover', 'mouseout', 'selectstart'], me._proxyDomEvent);
             domUtils.on(win, ['focus', 'blur'], me._proxyDomEvent);
-            domUtils.on(me.body,'drop',function(e){
+            domUtils.on(me.body, 'drop', function(e) {
                 //阻止ff下默认的弹出新页面打开图片
-                if(browser.gecko && e.stopPropagation) { e.stopPropagation(); }
+                if (browser.gecko && e.stopPropagation) { e.stopPropagation(); }
                 me.fireEvent('contentchange')
             });
-            domUtils.on(doc, ['mouseup', 'keydown'], function (evt) {
+            domUtils.on(doc, ['mouseup', 'keydown'], function(evt) {
                 //特殊键不触发selectionchange
                 if (evt.type == 'keydown' && (evt.ctrlKey || evt.metaKey || evt.shiftKey || evt.altKey)) {
                     return;
                 }
-                if (evt.button == 2)return;
+                if (evt.button == 2) return;
                 me._selectionChange(250, evt);
             });
         },
@@ -997,11 +996,11 @@
          * @return { * } fireEvent的返回值
          * @see UE.EventBase:fireEvent(String)
          */
-        _proxyDomEvent: function (evt) {
-            if(this.fireEvent('before' + evt.type.replace(/^on/, '').toLowerCase()) === false){
+        _proxyDomEvent: function(evt) {
+            if (this.fireEvent('before' + evt.type.replace(/^on/, '').toLowerCase()) === false) {
                 return false;
             }
-            if(this.fireEvent(evt.type.replace(/^on/, ''), evt) === false){
+            if (this.fireEvent(evt.type.replace(/^on/, ''), evt) === false) {
                 return false;
             }
             return this.fireEvent('after' + evt.type.replace(/^on/, '').toLowerCase())
@@ -1011,12 +1010,12 @@
          * @method _selectionChange
          * @private
          */
-        _selectionChange: function (delay, evt) {
+        _selectionChange: function(delay, evt) {
             var me = this;
             //有光标才做selectionchange 为了解决未focus时点击source不能触发更改工具栏状态的问题（source命令notNeedUndo=1）
-//            if ( !me.selection.isFocus() ){
-//                return;
-//            }
+            //            if ( !me.selection.isFocus() ){
+            //                return;
+            //            }
 
 
             var hackForMouseUp = false;
@@ -1030,7 +1029,7 @@
                 }
             }
             clearTimeout(_selectionChangeTimer);
-            _selectionChangeTimer = setTimeout(function () {
+            _selectionChangeTimer = setTimeout(function() {
                 if (!me.selection || !me.selection.getNative()) {
                     return;
                 }
@@ -1048,7 +1047,7 @@
                 var bakGetIERange;
                 if (ieRange) {
                     bakGetIERange = me.selection.getIERange;
-                    me.selection.getIERange = function () {
+                    me.selection.getIERange = function() {
                         return ieRange;
                     };
                 }
@@ -1074,7 +1073,7 @@
          * @param { * } args 传给命令函数的参数
          * @return { * } 返回命令函数运行的返回值
          */
-        _callCmdFn: function (fnName, args) {
+        _callCmdFn: function(fnName, args) {
             var cmdName = args[0].toLowerCase(),
                 cmd, cmdFn;
             cmd = this.commands[cmdName] || UE.commands[cmdName];
@@ -1098,7 +1097,7 @@
          * editor.execCommand(cmdName);
          * ```
          */
-        execCommand: function (cmdName) {
+        execCommand: function(cmdName) {
             cmdName = cmdName.toLowerCase();
             var me = this,
                 result,
@@ -1108,12 +1107,12 @@
             }
             if (!cmd.notNeedUndo && !me.__hasEnterExecCommand) {
                 me.__hasEnterExecCommand = true;
-                if (me.queryCommandState.apply(me,arguments) != -1) {
+                if (me.queryCommandState.apply(me, arguments) != -1) {
                     me.fireEvent('saveScene');
                     me.fireEvent.apply(me, ['beforeexeccommand', cmdName].concat(arguments));
                     result = this._callCmdFn('execCommand', arguments);
                     //保存场景时，做了内容对比，再看是否进行contentchange触发，这里多触发了一次，去掉
-//                    (!cmd.ignoreContentChange && !me._ignoreContentChange) && me.fireEvent('contentchange');
+                    //                    (!cmd.ignoreContentChange && !me._ignoreContentChange) && me.fireEvent('contentchange');
                     me.fireEvent.apply(me, ['afterexeccommand', cmdName].concat(arguments));
                     me.fireEvent('saveScene');
                 }
@@ -1138,7 +1137,7 @@
          * ```
          * @see COMMAND.LIST
          */
-        queryCommandState: function (cmdName) {
+        queryCommandState: function(cmdName) {
             return this._callCmdFn('queryCommandState', arguments);
         },
 
@@ -1152,7 +1151,7 @@
          * @grammar editor.queryCommandValue(cmdName)  =>  {*}
          * @see COMMAND.LIST
          */
-        queryCommandValue: function (cmdName) {
+        queryCommandValue: function(cmdName) {
             return this._callCmdFn('queryCommandValue', arguments);
         },
 
@@ -1178,7 +1177,7 @@
          * editor.hasContents(['span']);
          * ```
          */
-        hasContents: function (tags) {
+        hasContents: function(tags) {
             if (tags) {
                 for (var i = 0, ci; ci = tags[i++];) {
                     if (this.document.getElementsByTagName(ci).length > 0) {
@@ -1211,7 +1210,7 @@
          * editor.reset()
          * ```
          */
-        reset: function () {
+        reset: function() {
             this.fireEvent('reset');
         },
 
@@ -1223,8 +1222,9 @@
          * editor.setEnabled()
          * ```
          */
-        setEnabled: function () {
-            var me = this, range;
+        setEnabled: function() {
+            var me = this,
+                range;
             if (me.body.contentEditable == 'false') {
                 me.body.contentEditable = true;
                 range = me.selection.getRange();
@@ -1247,7 +1247,7 @@
                 me.fireEvent('selectionchange');
             }
         },
-        enable: function () {
+        enable: function() {
             return this.setEnabled();
         },
 
@@ -1274,7 +1274,7 @@
          * editor.setDisabled(['bold','insertimage']); //禁用工具栏中除加粗和插入图片之外的所有功能
          * ```
          */
-        setDisabled: function (except) {
+        setDisabled: function(except) {
             var me = this;
             except = except ? utils.isArray(except) ? except : [except] : [];
             if (me.body.contentEditable == 'true') {
@@ -1284,13 +1284,13 @@
                 me.body.contentEditable = false;
                 me.bkqueryCommandState = me.queryCommandState;
                 me.bkqueryCommandValue = me.queryCommandValue;
-                me.queryCommandState = function (type) {
+                me.queryCommandState = function(type) {
                     if (utils.indexOf(except, type) != -1) {
                         return me.bkqueryCommandState.apply(me, arguments);
                     }
                     return -1;
                 };
-                me.queryCommandValue = function (type) {
+                me.queryCommandValue = function(type) {
                     if (utils.indexOf(except, type) != -1) {
                         return me.bkqueryCommandValue.apply(me, arguments);
                     }
@@ -1299,7 +1299,7 @@
                 me.fireEvent('selectionchange');
             }
         },
-        disable: function (except) {
+        disable: function(except) {
             return this.setDisabled(except);
         },
 
@@ -1309,20 +1309,20 @@
          * @private
          * @param  { String } cont 要存入的内容
          */
-        _setDefaultContent: function () {
+        _setDefaultContent: function() {
             function clear() {
                 var me = this;
                 if (me.document.getElementById('initContent')) {
                     me.body.innerHTML = '<p>' + (ie ? '' : '<br/>') + '</p>';
                     me.removeListener('firstBeforeExecCommand focus', clear);
-                    setTimeout(function () {
+                    setTimeout(function() {
                         me.focus();
                         me._selectionChange();
                     }, 0)
                 }
             }
 
-            return function (cont) {
+            return function(cont) {
                 var me = this;
                 me.body.innerHTML = '<p id="initContent">' + cont + '</p>';
 
@@ -1338,8 +1338,9 @@
          * editor.setShow()
          * ```
          */
-        setShow: function () {
-            var me = this, range = me.selection.getRange();
+        setShow: function() {
+            var me = this,
+                range = me.selection.getRange();
             if (me.container.style.display == 'none') {
                 //有可能内容丢失了
                 try {
@@ -1349,14 +1350,14 @@
                     range.setStartAtFirst(me.body).collapse(true)
                 }
                 //ie下focus实效，所以做了个延迟
-                setTimeout(function () {
+                setTimeout(function() {
                     range.select(true);
                 }, 100);
                 me.container.style.display = '';
             }
 
         },
-        show: function () {
+        show: function() {
             return this.setShow();
         },
         /**
@@ -1367,14 +1368,14 @@
          * editor.setHide()
          * ```
          */
-        setHide: function () {
+        setHide: function() {
             var me = this;
             if (!me.lastBk) {
                 me.lastBk = me.selection.getRange().createBookmark(true);
             }
             me.container.style.display = 'none'
         },
-        hide: function () {
+        hide: function() {
             return this.setHide();
         },
 
@@ -1388,7 +1389,7 @@
          * editor.getLang('contextMenu.delete'); //如果当前是中文，那返回是的是'删除'
          * ```
          */
-        getLang: function (path) {
+        getLang: function(path) {
             var lang = UE.I18N[this.options.lang];
             if (!lang) {
                 throw Error("not import language file");
@@ -1396,7 +1397,7 @@
             path = (path || "").split(".");
             for (var i = 0, ci; ci = path[i++];) {
                 lang = lang[ci];
-                if (!lang)break;
+                if (!lang) break;
             }
             return lang;
         },
@@ -1422,10 +1423,10 @@
          * editor.getContentLength() //返回3
          * ```
          */
-        getContentLength: function (ingoneHtml, tagNames) {
-            var count = this.getContent(false,false,true).length;
+        getContentLength: function(ingoneHtml, tagNames) {
+            var count = this.getContent(false, false, true).length;
             if (ingoneHtml) {
-                tagNames = (tagNames || []).concat([ 'hr', 'img', 'iframe']);
+                tagNames = (tagNames || []).concat(['hr', 'img', 'iframe']);
                 count = this.getContentTxt().replace(/[\t\r\n]+/g, '').length;
                 for (var i = 0, ci; ci = tagNames[i++];) {
                     count += this.document.getElementsByTagName(ci).length;
@@ -1447,7 +1448,7 @@
          * });
          * ```
          */
-        addInputRule: function (rule) {
+        addInputRule: function(rule) {
             this.inputRules.push(rule);
         },
 
@@ -1462,7 +1463,7 @@
          * ```
          * @see UE.Editor:addInputRule
          */
-        filterInputRule: function (root) {
+        filterInputRule: function(root) {
             for (var i = 0, ci; ci = this.inputRules[i++];) {
                 ci.call(this, root)
             }
@@ -1481,7 +1482,7 @@
          * });
          * ```
          */
-        addOutputRule: function (rule) {
+        addOutputRule: function(rule) {
             this.outputRules.push(rule)
         },
 
@@ -1496,7 +1497,7 @@
          * ```
          * @see UE.Editor:addOutputRule
          */
-        filterOutputRule: function (root) {
+        filterOutputRule: function(root) {
             for (var i = 0, ci; ci = this.outputRules[i++];) {
                 ci.call(this, root)
             }
@@ -1515,17 +1516,17 @@
          * editor.getActionUrl('imageManager'); //返回 "/ueditor/php/controller.php?action=listimage"
          * ```
          */
-        getActionUrl: function(action){
+        getActionUrl: function(action) {
             var actionName = this.getOpt(action) || action,
                 imageUrl = this.getOpt('imageUrl'),
                 serverUrl = this.getOpt('serverUrl');
 
-            if(!serverUrl && imageUrl) {
+            if (!serverUrl && imageUrl) {
                 serverUrl = imageUrl.replace(/^(.*[\/]).+([\.].+)$/, '$1controller$2');
             }
 
-            if(serverUrl) {
-                serverUrl = serverUrl + (serverUrl.indexOf('?') == -1 ? '?':'&') + 'action=' + (actionName || '');
+            if (serverUrl) {
+                serverUrl = serverUrl + (serverUrl.indexOf('?') == -1 ? '?' : '&') + 'action=' + (actionName || '');
                 return utils.formatUrl(serverUrl);
             } else {
                 return '';

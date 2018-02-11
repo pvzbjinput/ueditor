@@ -39,8 +39,14 @@
                     }
                     html.push('</tr>')
                 }
-                //禁止指定table-width
-                return '<table class="table" style="width:800px"><tbody>' + html.join('') + '</tbody></table>'
+                var insertTableHtml = "";
+                if (opt.insertHtmlTableWidth) {
+                    insertTableHtml = '<table class="table" style="width:' + opt.insertHtmlTableWidth + 'px"><tbody>' + html.join('') + '</tbody></table>'
+                } else {
+                    insertTableHtml = '<table class="table"><tbody>' + html.join('') + '</tbody></table>';
+                }
+
+                return insertTableHtml;
             }
 
             if (!opt) {
@@ -63,6 +69,7 @@
 
             //todo其他属性
             !opt.tdvalign && (opt.tdvalign = me.options.tdvalign);
+            opt.insertHtmlTableWidth = me.options.insertHtmlTableWidth;
             me.execCommand("inserthtml", createTable(opt, tdWidth));
         }
     };
